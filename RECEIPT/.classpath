@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
+	<classpathentry kind="lib" path="/c/jar/dao/dao_adc.jar"/>
+	<classpathentry kind="lib" path="/c/jar/dao/dao_branch.jar"/>
+	<classpathentry kind="lib" path="/c/jar/dao/dao_cbranch.jar"/>
+	<classpathentry kind="lib" path="/c/jar/dao/dao_cclaim.jar"/>
+	<classpathentry kind="lib" path="/c/jar/dao/dao_cimb.jar"/>
+	<classpathentry kind="lib" path="/c/jar/dao/dao_claimback.jar"/>
+	<classpathentry kind="lib" path="/c/jar/dao/dao_cunderwrite.jar"/>
+	<classpathentry kind="lib" path="/c/jar/dao/dao_glife.jar"/>
+	<classpathentry kind="lib" path="/c/jar/dao/dao_grouplife.jar"/>
+	<classpathentry kind="lib" path="/c/jar/dao/dao_income.jar"/>
+	<classpathentry kind="lib" path="/c/jar/dao/dao_mstperson.jar"/>
+	<classpathentry kind="lib" path="/c/jar/dao/dao_mstpolicy.jar"/>
+	<classpathentry kind="lib" path="/c/jar/dao/dao_newservice.jar"/>
+	<classpathentry kind="lib" path="/c/jar/dao/dao_personnel.jar"/>
+	<classpathentry kind="lib" path="/c/jar/dao/dao_receipt.jar"/>
+	<classpathentry kind="lib" path="/c/jar/dao/dao_sales.jar"/>
+	<classpathentry kind="lib" path="/c/jar/dao/dao_salesbenefit.jar"/>
+	<classpathentry kind="lib" path="/c/jar/dao/dao_service.jar"/>
+	<classpathentry kind="lib" path="/c/jar/dao/dao_srvservice.jar"/>
+	<classpathentry kind="lib" path="/c/jar/dao/dataLayer.jar"/>
+	<classpathentry kind="lib" path="/c/jar/utility/utility.jar"/>
+	<classpathentry kind="lib" path="/c/tools/manit.jar"/>
+	<classpathentry kind="lib" path="/c/tools/rte.jar"/>
+	<classpathentry kind="lib" path="/c/jar/layout/layout_receipt.jar"/>
+	<classpathentry kind="lib" path="/c/jar/layout/layout_universal.jar"/>
+	<classpathentry kind="lib" path="D:/_USERPROFILE_LINK/Documents/workspace/RECEIPT/lib/app_insure.jar"/>
+	<classpathentry kind="lib" path="D:/_USERPROFILE_LINK/Documents/workspace/RECEIPT/lib/bl_branch.jar"/>
+	<classpathentry kind="lib" path="D:/_USERPROFILE_LINK/Documents/workspace/RECEIPT/lib/bl_insuredocument.jar"/>
+	<classpathentry kind="lib" path="D:/_USERPROFILE_LINK/Documents/workspace/RECEIPT/lib/bl_universal.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
