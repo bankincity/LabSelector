@@ -1,18 +1,32 @@
 package rte.bl.branch.receipt;
+import java.util.ArrayList;
+
+import grouplife.nbgroup.data.Condition;
+import layout.bean.cunderwrite.TrprangeBean;
+import layout.bean.receipt.TrprangeBeanRecord;
 import manit.*;
 import manit.rte.*;
 import manit.rte.Task.*;
+import rte.bl.dataaccess.DAOInterface;
+import rte.bl.dataaccess.PrimaryKey;
+import rte.bl.dataaccess.search.ByKey;
+import rte.bl.dataaccess.search.ConditionEqual;
+import rte.bl.dataaccess.search.Where;
+import rte.bl.dataaccess.selector.SelectorOneTable;
 import utility.cfile.*;
 import utility.support.MyVector;
 import utility.support.DateInfo;
-public class RteTrpRangeAndTrpTemp  implements Task
+public class RteTrpRangeAndTrpTemp  implements TaskUsr
 {
-	Mrecord trptmp;
-	Mrecord trprange;
+	//Mrecord trptmp;
+	//Mrecord trprange;
 	String sysdate;
 	String branch;
+	DAOInterface trptemp ;
+	DAOInterface trprange;
+	
 	MyVector vec ;
-	public Result execute(Object param)
+	public Result execute(UserInfo user, Object param)
 	{
 		if(! (param instanceof Object []))
 			return new Result("Invalid Parameter  : Object [] {branch,vector}",-1);
@@ -35,7 +49,7 @@ public class RteTrpRangeAndTrpTemp  implements Task
 			if(parameter.length == 6)
 				fileName = (String)parameter[5];
 			try {
-				trprange  = CFile.opens(fileName);
+				trprange = new rte.bl.dataaccess.receipt.TrprangeDAO(user);
 				if(use.charAt(0) == 'D')
 					terminateRange(range);
 				else
@@ -48,11 +62,13 @@ public class RteTrpRangeAndTrpTemp  implements Task
 		}
 		return new Result("",0);
 	}
-	private String getRange()
-        {
-                trprange.start(1);
+	private String getRange() throws Exception
+    {
+                /*trprange.//trprange.start(1);
+				
                 String trange = DateInfo.sysDate().substring(2,4);
                 String range = trange+"000";
+                
                 for (boolean st = trprange.equalGreat(branch+range);
                         st && trange.compareTo(trprange.get("range").substring(0,2)) == 0 && 
 			branch.compareTo(trprange.get("branch")) == 0;
@@ -62,22 +78,83 @@ public class RteTrpRangeAndTrpTemp  implements Task
                            range = trprange.get("range");
                 }
                 trprange.start(0);
-                return M.inc(range);
+                return M.inc(range);*/
+			//Condition[] cond_table = new Condition[] {new ConditionEqual(new ByKey("range", branch))};
+			String trange = DateInfo.sysDate().substring(2,4);
+			String range = trange+"000";
+			ByKey k1 = new ByKey("branch", branch);
+			k1.setKeyNumber(1);
+			//ByKey k2 = new ByKey("branch", branch);
+			//k2.setKeyNumber(1);
+			Where where = new Where(k1);
+			SelectorOneTable s = new SelectorOneTable("trprange","receipt",where);
+			XTempList out = s.select();
+			ArrayList<String> field = out.getDefaultFields();
+			for (boolean st = out.first();st;st=out.next())
+			{
+				if(trange.compareTo(out.get("range").substring(0,2)) == 0)
+				{
+					if(range.compareTo(out.get("range")) < 0 )
+						range = out.get("range");
+				}
+			}	
+
+			return M.inc(range);
         }
 	private void terminateRange(String range) throws Exception
 	{
-                if(trprange.equal(branch+"U"+range))
+		//layout.bean.receipt.TrprangeBean d = layout.bean.receipt.TrprangeBean.newInstance();
+		
+		//d.get
+		PrimaryKey pk = new PrimaryKey();
+		pk.addKey( "branch", branch);
+		pk.addKey( "used", "U");
+		pk.addKey( "range", range);
+		layout.bean.receipt.TrprangeBean oldBean = (layout.bean.receipt.TrprangeBean)trprange.equal(pk);
+		
+		Record r = TrprangeBeanRecord.getRecord(oldBean);
+		r.set("used", "C");
+		layout.bean.receipt.TrprangeBean newBean = TrprangeBeanRecord.getTrprangeBean(r);
+		trprange.update(oldBean, newBean, pk);
+		
+		
+        /*if(trprange.equal(branch+"U"+range))
 		{
 			trprange.lock();
 			trprange.set("used","C");
 			trprange.update();
 			trprange.release();
-		}
+		}*/
 	}
 	private void  updateOrInsert(String range,String start,String end) throws Exception
 	{
 		System.out.println("ranmge ========"+range);
-                if(trprange.equal(branch+"U"+range))
+		PrimaryKey pk = new PrimaryKey();
+		pk.addKey( "branch", branch);
+		pk.addKey( "used", "U");
+		pk.addKey( "range", range);
+		layout.bean.receipt.TrprangeBean oldBean = (layout.bean.receipt.TrprangeBean)trprange.equal(pk);
+		if(oldBean != null)
+		{
+			Record r = TrprangeBeanRecord.getRecord(oldBean);
+			r.set("startTrp",start);
+			r.set("endTrp",end);
+			r.set("currentTrp",start);
+			layout.bean.receipt.TrprangeBean newBean = TrprangeBeanRecord.getTrprangeBean(r);
+			trprange.update(oldBean, newBean, pk);
+		}
+		else
+		{
+			layout.bean.receipt.TrprangeBean newBean = layout.bean.receipt.TrprangeBean.newInstance();
+			newBean.setRange(getRange());
+			newBean.setBranch(branch);
+			newBean.setUsed("U");
+			newBean.setStartTrp(start);
+			newBean.setEndTrp(end);
+			newBean.setCurrentTrp(start);
+			trprange.insert(newBean);
+		}
+                /*if(trprange.equal(branch+"U"+range))
                 {
 			trprange.lock();
                         trprange.set("startTrp",start);
@@ -96,7 +173,8 @@ public class RteTrpRangeAndTrpTemp  implements Task
 			trprange.lock();
                         trprange.insert();
                 	trprange.release();
-                }
+                }*/
+		
 		
 	}
 
